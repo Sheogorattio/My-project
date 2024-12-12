@@ -17,8 +17,7 @@ public class BatteryScript : MonoBehaviour
     {
        
         if (other.gameObject.tag == "Character") {
-             
-             isColliding = true;
+            isColliding = true;
         }
     }
     // Update is called once per frame

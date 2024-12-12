@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Night light
   - Day light
+  - Character
   layers:
   - Default
   - TransparentFX
