@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BatteryScript : MonoBehaviour
 {
+    [SerializeField]
+    private float batteryLevel=1;
     private Collider _collider;
     private bool isColliding;
     // Start is called before the first frame update
@@ -24,8 +26,7 @@ public class BatteryScript : MonoBehaviour
     void Update()
     {
         if(isColliding){
-            Debug.Log("COLLIDING");
-            GameState.isRecharge = true;
+            GameState.TriggerGameEvent("Recharging", batteryLevel);
             this.gameObject.SetActive(false);
         }
     }

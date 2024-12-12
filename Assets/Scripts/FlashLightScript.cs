@@ -22,20 +22,17 @@ public class FlashLightScript : MonoBehaviour
             Debug.LogWarning("FlashLightScript: parentTransform is null");
         }
         charge = 1f;
+        part = charge;
         _light = GetComponent<Light>();
         capacityImage = GameObject.Find("CapacityImage");
+    
+        GameState.Subsribe(OnRecharge, "Recharging");
     }
 
     // Update is called once per frame
     void Update()
     {
         if(parentTransform == null) return;
-
-        if(GameState.isRecharge){
-            charge += 1f;
-            GameState.isRecharge = false;
-            part = charge >1f ? 1f : charge;
-        }
 
         if(charge>0 && !GameState.isDay){
             _light.intensity = charge;
@@ -53,5 +50,26 @@ public class FlashLightScript : MonoBehaviour
             transform.forward = forward.normalized;
         }
       
+    }
+
+    private void OnRecharge(string eventName, object addLevel){
+        if( addLevel is float){
+            charge += (float)addLevel;
+            part = charge > 1f ? 1f : charge;
+            GameState.TriggerGameEvent("Broadcast", new GameEvents.MessageEvent(){
+                message = "Батарею дозаряджено на +" + ((float)addLevel *100)+ "%",
+                data = addLevel
+            });
+            Debug.Log(eventName + " level" + addLevel);
+        }
+        else{
+            Debug.LogError("OnRecharge: addLevel is not a float");
+        }
+        
+    }
+
+    private void OnDestroy()
+    {
+        GameState.Unsubscribe(OnRecharge, "Recharging");
     }
 }

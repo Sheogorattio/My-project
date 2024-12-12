@@ -11,7 +11,7 @@ public class ToastScript : MonoBehaviour
 
     private  TMPro.TextMeshProUGUI toastTMP;
     private static ToastScript instance;
-    private float timeout = 5f;
+    private float timeout = 1f;
     private float leftTime;
     private  Queue<ToastMessage> messages = new Queue<ToastMessage>();
     private GameObject content;
@@ -41,6 +41,12 @@ public class ToastScript : MonoBehaviour
         
        
     }
+    
+    private void OnGameEvent(string eventName, object data){
+        if(data is GameEvents.INotifier n){
+            ShowToast(n.message);
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -48,8 +54,8 @@ public class ToastScript : MonoBehaviour
         content = transform.Find("Content").gameObject;
         toastTMP = content.transform.Find("ToastTMP").GetComponent<TMPro.TextMeshProUGUI>();
         content.SetActive(false);
+        GameState.Subsribe(OnGameEvent);
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -69,6 +75,11 @@ public class ToastScript : MonoBehaviour
                 content.SetActive(true);
             }
         }
+    }
+
+    void OnDestroy()
+    {
+        GameState.Unsubscribe(OnGameEvent);
     }
 
     private class ToastMessage{

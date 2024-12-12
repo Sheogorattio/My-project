@@ -30,4 +30,17 @@ public class KeyPointScript : MonoBehaviour
             }
         }
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.name == "Character"){
+            GameState.collectedItems.Add("Key"+keyPointName, part);
+            GameState.TriggerGameEvent("KeyPoint", 
+            new GameEvents.MessageEvent(){
+                message = "Ключ підібрано",
+                data = part
+            });
+            Destroy(gameObject);
+        }
+    }
 }
