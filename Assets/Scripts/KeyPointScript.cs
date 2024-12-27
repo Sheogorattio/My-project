@@ -24,7 +24,7 @@ public class KeyPointScript : MonoBehaviour
         if(leftTime >0){
             leftTime -= Time.deltaTime;
             part = leftTime/timeout;
-            
+            Destroy(gameObject);
             if(leftTime < 0){                
                 leftTime = 0;
             }
