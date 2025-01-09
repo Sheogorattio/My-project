@@ -14,7 +14,7 @@ public class Door1Script : MonoBehaviour
     {
         if(other.gameObject.name == "Character"){
 
-            if(GameState.collectedItems.Keys.Any(k => k == "Key1")){
+            if(GameState.collectedItems.Keys.Any(k => k == "Key" + this.requiredKey)){
                 GameState.TriggerGameEvent("Door1", 
                     new GameEvents.MessageEvent{
                         message = "Двері відчиняються",
