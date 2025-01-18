@@ -10,12 +10,17 @@ public class KeyPointScript : MonoBehaviour
     private float timeout  = 25;
     private float leftTime;
 
+    private AudioSource collectedSound;
+
+    private float destroyTimout =0;
+
     public float part;
     // Start is called before the first frame update
     void Start()
     {
         part = 1;
         leftTime = timeout;
+        collectedSound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -26,6 +31,12 @@ public class KeyPointScript : MonoBehaviour
             part = leftTime/timeout;
             if(leftTime <= 0){                
                 leftTime = 0;
+                Destroy(gameObject);
+            }
+        }
+        if(this.destroyTimout>0){
+            this.destroyTimout -= Time.deltaTime;
+            if(this.destroyTimout <= 0){
                 Destroy(gameObject);
             }
         }
@@ -40,7 +51,8 @@ public class KeyPointScript : MonoBehaviour
                 message = "Ключ підібрано",
                 data = part
             });
-            Destroy(gameObject);
+            this.collectedSound.Play();
+           this.destroyTimout = .3f;
         }
     }
 }

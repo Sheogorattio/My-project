@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BatteryScript : MonoBehaviour
@@ -8,10 +9,15 @@ public class BatteryScript : MonoBehaviour
     private float batteryLevel=1;
     private Collider _collider;
     private bool isColliding;
+
+    private float destroyTimeout =0;
+
+    private AudioSource collectSound;
     // Start is called before the first frame update
     void Start()
     {
         _collider = GetComponent<Collider>();
+        collectSound = GetComponent<AudioSource>();
 
     }
 
@@ -19,15 +25,19 @@ public class BatteryScript : MonoBehaviour
     {
        
         if (other.gameObject.tag == "Character") {
-            isColliding = true;
+            _collider.enabled = false;
+            GameState.TriggerGameEvent("Recharging", batteryLevel);
+            this.collectSound.Play();
+            destroyTimeout = .3f;
         }
     }
     // Update is called once per frame
     void Update()
-    {
-        if(isColliding){
-            GameState.TriggerGameEvent("Recharging", batteryLevel);
-            this.gameObject.SetActive(false);
+    {   if(destroyTimeout > 0){
+            destroyTimeout -= Time.deltaTime;
+            if(destroyTimeout <= 0){
+                Destroy(this.gameObject);
+            }
         }
     }
 }

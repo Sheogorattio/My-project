@@ -8,6 +8,8 @@ public class LightScript : MonoBehaviour
 {
     private Light[] dayLights;
     private Light[] nightLights;
+
+    private AudioSource switchSound;
     
     // Start is called before the first frame update
     void Start()
@@ -15,6 +17,7 @@ public class LightScript : MonoBehaviour
         dayLights = GameObject.FindGameObjectsWithTag("Day light").Select(g => g.GetComponent<Light>()).ToArray();
         nightLights = GameObject.FindGameObjectsWithTag("Night light").Select(g => g.GetComponent<Light>()).ToArray();
         switchLight();
+        this.switchSound = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -22,6 +25,7 @@ public class LightScript : MonoBehaviour
     {
         if(Input.GetKeyUp(KeyCode.L)){
             switchLight();
+            this.switchSound.Play();
         }
     }
 

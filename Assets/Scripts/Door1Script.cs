@@ -10,9 +10,14 @@ public class Door1Script : MonoBehaviour
     private float openingTime = 3f;
     private float timeout =0f;
 
+    private bool isOpen = false;
+
+    private AudioSource closedSound;
+    private AudioSource openedSound;
+
     void OnCollisionEnter(Collision other)
     {
-        if(other.gameObject.name == "Character"){
+        if(other.gameObject.name == "Character" && !this.isOpen){
 
             if(GameState.collectedItems.Keys.Any(k => k == "Key" + this.requiredKey)){
                 GameState.TriggerGameEvent("Door1", 
@@ -21,6 +26,8 @@ public class Door1Script : MonoBehaviour
                         data = requiredKey
                     });
                 timeout = openingTime;
+                this.openedSound.Play();
+                this.isOpen = true;
             }
             else{
                 GameState.TriggerGameEvent("Door1", 
@@ -28,13 +35,16 @@ public class Door1Script : MonoBehaviour
                         message = "Для відкривання двері небхідно знайти ключ " +requiredKey,
                         data = requiredKey
                     });
+                    this.closedSound.Play();
             }            
         }
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+        AudioSource[] audioSources = GetComponents<AudioSource>();
+        this.closedSound = audioSources[0];
+        this.openedSound = audioSources[1];
     }
 
     // Update is called once per frame

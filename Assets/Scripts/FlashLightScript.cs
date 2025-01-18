@@ -13,6 +13,12 @@ public class FlashLightScript : MonoBehaviour
 
     public float part;
 
+    private AudioSource halfEmptySound;
+    private bool isHalfEmpty = false;
+    private AudioSource thirtyPercentsEmptySound;
+    private bool isThirtyPercentsEmpty = false;
+
+
     private GameObject capacityImage;
     // Start is called before the first frame update
     void Start()
@@ -27,6 +33,9 @@ public class FlashLightScript : MonoBehaviour
         capacityImage = GameObject.Find("CapacityImage");
     
         GameState.Subsribe(OnRecharge, "Recharging");
+
+        this.halfEmptySound = GetComponents<AudioSource>()[0];
+        this.thirtyPercentsEmptySound = GetComponents<AudioSource>()[1];
     }
 
     // Update is called once per frame
@@ -39,6 +48,14 @@ public class FlashLightScript : MonoBehaviour
             charge -= Time.deltaTime/worktime;
             part = charge;
         } 
+        if(charge <= 0.3f && charge >= 0f && !this.isThirtyPercentsEmpty){
+            this.thirtyPercentsEmptySound.Play();
+            this.isThirtyPercentsEmpty = true;
+        } 
+        if(charge <= 0.5f && charge >= 0.2f && !this.isHalfEmpty) {
+            this.halfEmptySound.Play();
+            this.isHalfEmpty = true;
+        }
 
         if(GameState.isFpv){
             transform.forward = Camera.main.transform.forward;
@@ -56,6 +73,12 @@ public class FlashLightScript : MonoBehaviour
         if( addLevel is float){
             charge += (float)addLevel;
             part = charge > 1f ? 1f : charge;
+            if(charge >= 0.3f){
+                this.isThirtyPercentsEmpty = false;               
+            }
+            if(charge >= 0.5f){
+                this.isHalfEmpty = false;
+            }
             GameState.TriggerGameEvent("Broadcast", new GameEvents.MessageEvent(){
                 message = "Батарею дозаряджено на +" + ((float)addLevel *100)+ "%",
                 data = addLevel
